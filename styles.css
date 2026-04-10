@@ -71,7 +71,7 @@ button,
     align-items: center;
     justify-content: space-between;
     padding: 28px max(20px, calc((100vw - var(--container)) / 2)) 10px;
-    background: linear-gradient(180deg, #f6f7f7 0%, #ecefef 100%);
+    /* background: linear-gradient(180deg, #f6f7f7 0%, #ecefef 100%); */
 }
 
 .site-header::after {
@@ -177,11 +177,15 @@ h2 {
 }
 
 h1 {
-    font-size: clamp(2rem, 4.4vw, 3rem);
+    font-size: clamp(2.35rem, 5vw, 3.5rem);
     line-height: 1.06;
     letter-spacing: -0.01em;
     width: 100%;
     max-width: none;
+}
+
+.center-text {
+    text-align: center;
 }
 
 h2 {
