@@ -476,7 +476,7 @@ h2 {
 
 .solution {
     display: grid;
-    grid-template-columns: minmax(0, 0.98fr) minmax(0, 1.02fr);
+    grid-template-columns: minmax(0, 1.14fr) minmax(280px, 0.86fr);
     gap: 34px;
     align-items: center;
 }
@@ -498,22 +498,75 @@ h2 {
 
 .solution-copy .benefit-list {
     margin: 26px 0 28px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 18px;
 }
 
 .solution-copy .benefit-list li {
-    padding: 0 0 0 34px;
-    line-height: 1.4;
-    border: 0;
-    border-radius: 0;
-    background: transparent;
+    padding: 16px;
+    border: 1px solid rgba(21, 34, 29, 0.08);
+    border-radius: 16px;
+    background: linear-gradient(180deg, #ffffff 0%, #fbfcfb 100%);
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+        0 10px 28px rgba(21, 34, 29, 0.05);
+    display: grid;
+    grid-template-columns: 68px minmax(0, 1fr);
+    align-items: center;
+    gap: 8px;
+    min-height: 132px;
+    font-size: clamp(0.8rem, 1.2vw, 1.1rem);
+    font-weight: 500;
 }
 
 .solution-copy .benefit-list li::before {
-    top: 0.62em;
-    left: 0;
-    width: 10px;
-    height: 10px;
+    display: none;
+}
+
+.solution-copy .benefit-icon {
+    width: 58px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 18px;
+    font-size: 1.9rem;
+    background: linear-gradient(180deg, #f4faf6 0%, #eef7f1 100%);
+    border: 1px solid rgba(47, 106, 80, 0.16);
+    color: #25634b;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.7),
+        0 8px 18px rgba(47, 106, 80, 0.08);
+}
+
+.solution-copy .benefit-card span {
+    display: block;
+    max-width: 18ch;
+}
+
+.solution-copy .benefit-card--strength .benefit-icon {
+    color: #b87522;
+    background: linear-gradient(180deg, #fff8ec 0%, #fff2dc 100%);
+    border-color: rgba(184, 117, 34, 0.18);
+}
+
+.solution-copy .benefit-card--independence .benefit-icon {
+    color: #4f8b7f;
+    background: linear-gradient(180deg, #f4fbf8 0%, #ebf6f1 100%);
+    border-color: rgba(79, 139, 127, 0.18);
+}
+
+.solution-copy .benefit-card--energy .benefit-icon {
+    color: #dfad13;
+    background: linear-gradient(180deg, #fffbee 0%, #fff4ce 100%);
+    border-color: rgba(223, 173, 19, 0.2);
+}
+
+.solution-copy .benefit-card--joy .benefit-icon {
+    color: #527b76;
+    background: linear-gradient(180deg, #f6f8f7 0%, #eef2f0 100%);
+    border-color: rgba(82, 123, 118, 0.16);
 }
 
 .image-card-offset {
@@ -937,6 +990,31 @@ h2 {
         max-width: none;
         font-size: 1rem;
         line-height: 1.28;
+    }
+
+    .solution-copy .benefit-list {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .solution-copy .benefit-list li {
+        grid-template-columns: 52px minmax(0, 1fr);
+        min-height: 0;
+        gap: 12px;
+        padding: 16px;
+        border-radius: 22px;
+        font-size: 1rem;
+    }
+
+    .solution-copy .benefit-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 16px;
+        font-size: 1.35rem;
+    }
+
+    .solution-copy .benefit-card span {
+        max-width: none;
     }
 
     .hero-actions {
