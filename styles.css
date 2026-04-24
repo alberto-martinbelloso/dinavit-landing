@@ -282,6 +282,12 @@ h2 {
     min-height: 320px;
 }
 
+.image-card picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
 .image-card img {
     width: 100%;
     height: 100%;
@@ -474,21 +480,24 @@ h2 {
     margin-bottom: 32px;
 }
 
+.transition-bridge {
+    margin-top: 16px;
+    margin-bottom: 16px;
+    padding: 32px clamp(24px, 4vw, 56px);
+    text-align: center;
+}
+
+.transition-bridge h2 {
+    margin: 12px auto 0;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    color: var(--accent-deep);
+}
+
 .solution {
     display: grid;
     grid-template-columns: minmax(0, 1.14fr) minmax(280px, 0.86fr);
     gap: 34px;
     align-items: center;
-}
-
-.solution-copy .eyebrow {
-    margin: 0 0 12px;
-    color: var(--accent-deep);
-    font-family: "Inter Tight", sans-serif;
-    font-size: clamp(1.05rem, 1.8vw, 1.35rem);
-    font-weight: 700;
-    letter-spacing: 0.01em;
-    text-transform: none;
 }
 
 .solution-copy h2 {
@@ -861,6 +870,11 @@ h2 {
         padding-left: 14px;
     }
 
+    .transition-bridge {
+        margin-top: 10px;
+        /* margin-bottom: 18px; */
+    }
+
     .hero-image {
         min-height: 460px;
     }
@@ -968,6 +982,18 @@ h2 {
         font-size: 1.45rem;
         line-height: 1.18;
         margin-bottom: 16px;
+    }
+
+    .transition-bridge {
+        padding: 0 16px;
+        /* border-radius: 26px; */
+    }
+
+    .transition-bridge h2 {
+        /* margin: 10px; */
+        /* max-width: 10ch; */
+        font-size: clamp(1.5rem, 7vw, 2rem);
+        line-height: 0.96;
     }
 
     .pain-points .issue-card {
