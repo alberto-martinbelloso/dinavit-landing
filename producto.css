@@ -397,7 +397,7 @@
     font-weight: 700;
 }
 
-.pdp-ingredients details[open] summary::after {
+.pdp-ingredients[open] summary::after {
     content: "−";
 }
 
@@ -595,6 +595,10 @@
 }
 
 .pdp-science-stat-head {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    column-gap: 14px;
+    align-items: center;
     padding-bottom: 14px;
     margin-bottom: 14px;
     border-bottom: 1px solid var(--line);
@@ -614,19 +618,20 @@
     width: 2rem;
 }
 
-.pdp-science-stat strong {
+.pdp-science-stat-title strong {
     display: block;
-    margin-top: 18px;
     font-family: "Inter Tight", sans-serif;
-    font-size: 2.2rem;
+    font-size: 1.55rem;
+    line-height: 1;
     font-weight: 800;
     color: var(--surface-dark);
 }
 
-.pdp-science-stat span {
+.pdp-science-stat-title span {
     display: block;
-    margin-top: 4px;
-    font-size: 1.06rem;
+    margin-top: 3px;
+    font-size: 0.94rem;
+    line-height: 1.2;
     font-weight: 700;
     color: var(--surface-dark);
 }
@@ -2050,5 +2055,575 @@ body.has-sticky-cta .page-shell {
     .pdp-thumb {
         width: 72px;
         height: 72px;
+    }
+}
+
+/* Product page responsiveness */
+:root {
+    --container: min(1440px, calc(100% - 128px));
+}
+
+@media (min-width: 1600px) {
+    .pdp-hero {
+        grid-template-columns: minmax(0, 1.05fr) minmax(480px, 0.95fr);
+        gap: 64px;
+    }
+
+    .pdp-gallery-main {
+        height: min(42vw, 660px);
+    }
+
+    .pdp-science,
+    .pdp-timeline,
+    .pdp-evidence {
+        width: min(1320px, var(--container));
+    }
+}
+
+@media (max-width: 1280px) {
+    :root {
+        --container: calc(100% - 80px);
+    }
+
+    .pdp-science {
+        width: min(1120px, var(--container));
+    }
+
+    .pdp-timeline,
+    .pdp-evidence {
+        width: min(1160px, var(--container));
+    }
+
+    .pdp-hero {
+        gap: 36px;
+    }
+
+    .pdp-routine-step {
+        padding-right: 16px;
+        padding-left: 16px;
+    }
+}
+
+@media (max-width: 1120px) {
+    .pdp-gallery-main {
+        height: clamp(440px, 62vw, 620px);
+    }
+
+    .pdp-info {
+        max-width: 760px;
+        margin: 0 auto;
+    }
+
+    .pdp-why,
+    .pdp-science-top {
+        gap: 32px;
+    }
+
+    .pdp-guarantee-copy {
+        padding: clamp(32px, 5vw, 52px);
+    }
+}
+
+@media (max-width: 900px) {
+    :root {
+        --container: calc(100% - 56px);
+    }
+
+    .section {
+        padding-top: 40px;
+        padding-bottom: 40px;
+    }
+
+    .pdp-science,
+    .pdp-timeline,
+    .pdp-evidence {
+        width: var(--container);
+    }
+
+    .pdp-science-stats {
+        gap: 22px;
+        margin-top: 40px;
+    }
+
+    .pdp-mission-principle {
+        padding-right: 16px;
+        padding-left: 16px;
+    }
+
+    .pdp-guarantee-grid {
+        gap: 0;
+    }
+
+    .pdp-guarantee-photo {
+        max-width: 680px;
+        margin: 0 auto;
+    }
+
+    .pdp-guarantee-copy {
+        max-width: 760px;
+        margin: 0 auto;
+        padding-right: 0;
+        padding-left: 0;
+    }
+
+    .pdp-guarantee-benefits {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .pdp-guarantee-benefit {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        align-items: start;
+    }
+}
+
+@media (max-width: 720px) {
+    :root {
+        --container: calc(100% - 32px);
+    }
+
+    html,
+    body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: clip;
+    }
+
+    .page-shell,
+    main {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .site-header {
+        width: 100%;
+        max-width: 100%;
+        padding-right: 16px;
+        padding-left: 16px;
+    }
+
+    .section {
+        padding-top: 32px;
+        padding-bottom: 32px;
+    }
+
+    .pdp-hero {
+        min-width: 0;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 28px;
+        padding-top: 20px;
+    }
+
+    .pdp-gallery,
+    .pdp-info,
+    .pdp-gallery-main-wrap,
+    .pdp-thumbs-wrap {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .pdp-gallery-main-wrap {
+        display: block;
+    }
+
+    .pdp-gallery-main {
+        height: min(112vw, 500px);
+        padding: 12px 30px;
+    }
+
+    .pdp-gallery-nav {
+        position: absolute;
+        top: 50%;
+        z-index: 2;
+        width: 36px;
+        height: 36px;
+        transform: translateY(-50%);
+    }
+
+    .pdp-gallery-nav:hover {
+        transform: translateY(-50%);
+    }
+
+    .pdp-gallery-prev {
+        left: 0;
+    }
+
+    .pdp-gallery-next {
+        right: 0;
+    }
+
+    .pdp-zoom-hint {
+        right: 10px;
+        bottom: 10px;
+        width: 34px;
+        height: 34px;
+        font-size: 0.95rem;
+    }
+
+    .pdp-thumbs-wrap {
+        margin-top: 10px;
+    }
+
+    .pdp-thumbs-nav {
+        display: none;
+    }
+
+    .pdp-thumbs {
+        gap: 8px;
+    }
+
+    .pdp-thumb {
+        width: 64px;
+        height: 64px;
+    }
+
+    .pdp-info h1 {
+        font-size: clamp(1.95rem, 9vw, 2.6rem);
+    }
+
+    .pdp-description {
+        font-size: 1.05rem;
+        line-height: 1.6;
+    }
+
+    .pdp-benefit-list {
+        margin-right: 0;
+        margin-left: 16px;
+    }
+
+    .pdp-packs {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .pdp-pack {
+        min-width: 0;
+        padding: 14px 6px 12px;
+    }
+
+    .pdp-pack-discount,
+    .pdp-pack-tag {
+        padding-right: 5px;
+        padding-left: 5px;
+        font-size: 0.56rem;
+        letter-spacing: 0;
+        white-space: nowrap;
+    }
+
+    .pdp-pack-label {
+        font-size: 0.82rem;
+    }
+
+    .pdp-pack-sub {
+        font-size: 0.7rem;
+    }
+
+    .pdp-pack-price {
+        font-size: 1.12rem;
+    }
+
+    .pdp-pack-compare {
+        display: block;
+        margin: 3px 0 0;
+        font-size: 0.7rem;
+    }
+
+    .pdp-why-green,
+    .pdp-why-white {
+        width: 100%;
+        min-width: 0;
+        padding: 26px 20px;
+    }
+
+    .pdp-why-green h2 {
+        margin-bottom: 20px;
+    }
+
+    .pdp-why-green p {
+        margin-top: 20px;
+    }
+
+    .pdp-science-copy h2,
+    .pdp-mission-copy h2 {
+        font-size: clamp(1.9rem, 8vw, 2.4rem);
+    }
+
+    .pdp-science-copy p {
+        font-size: 1.02rem;
+        line-height: 1.65;
+    }
+
+    .pdp-science-visual,
+    .pdp-science-visual img {
+        min-height: 200px;
+    }
+
+    .pdp-science-stats {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+
+    .pdp-evidence-grid {
+        gap: 32px;
+        margin-top: 32px;
+    }
+
+    .pdp-evidence-bubble {
+        padding: 22px 20px;
+    }
+
+    .pdp-evidence-quote {
+        font-size: 1.05rem;
+    }
+
+    .pdp-evidence-source {
+        align-items: flex-start;
+        gap: 14px;
+        margin-left: 0;
+    }
+
+    .pdp-evidence-badge {
+        height: 48px;
+    }
+
+    .pdp-evidence-badge img {
+        max-width: 140px;
+    }
+
+    .pdp-mission-grid {
+        gap: 28px;
+    }
+
+    .pdp-mission-photo {
+        max-width: 240px;
+    }
+
+    .pdp-mission-rule {
+        margin: 22px 0;
+    }
+
+    .pdp-guarantee-copy h2 {
+        font-size: clamp(2rem, 10vw, 3rem);
+    }
+
+    .pdp-guarantee-intro {
+        margin-top: 22px;
+    }
+
+    .pdp-guarantee-benefits {
+        grid-template-columns: 1fr;
+        gap: 22px;
+        margin-top: 30px;
+        padding: 26px 0;
+    }
+
+    .pdp-guarantee-benefit {
+        grid-template-columns: 52px minmax(0, 1fr);
+        gap: 16px;
+        align-items: center;
+    }
+
+    .pdp-guarantee-icon {
+        width: 52px;
+        height: 52px;
+        font-size: 1.5rem;
+    }
+
+    .pdp-guarantee-cta {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .pdp-routine-panel {
+        padding: 34px 18px 24px;
+    }
+
+    .pdp-routine-heading h2 {
+        font-size: clamp(2.25rem, 11vw, 3.4rem);
+    }
+
+    .pdp-routine-steps {
+        margin-top: 42px;
+    }
+
+    .pdp-routine-step p {
+        max-width: 34rem;
+    }
+
+    .pdp-faq-item {
+        padding: 16px;
+    }
+
+    .pdp-faq-item summary {
+        padding-right: 22px;
+        line-height: 1.4;
+    }
+
+    .sticky-cta-inner {
+        gap: 10px;
+        padding: 10px 0;
+    }
+
+    .sticky-cta-product img {
+        width: 42px;
+        height: 42px;
+    }
+
+    .sticky-cta-button {
+        padding: 12px 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --container: calc(100% - 24px);
+    }
+
+    .site-header {
+        padding-right: 12px;
+        padding-left: 12px;
+    }
+
+    .brand img {
+        width: 120px;
+    }
+
+    .pdp-gallery-main {
+        height: min(118vw, 430px);
+        padding-right: 26px;
+        padding-left: 26px;
+    }
+
+    .pdp-badges {
+        gap: 8px;
+    }
+
+    .pdp-badge {
+        padding: 7px 10px;
+        font-size: 0.8rem;
+    }
+
+    .pdp-pack {
+        padding: 14px 4px 12px;
+    }
+
+    .pdp-pack-price {
+        font-size: 1rem;
+    }
+
+    .pdp-add-to-cart {
+        padding-right: 16px;
+        padding-left: 16px;
+    }
+
+    .pdp-trust li {
+        align-items: flex-start;
+        line-height: 1.45;
+    }
+
+    .pdp-ingredients {
+        padding: 14px;
+    }
+
+    .pdp-why-list li {
+        grid-template-columns: 44px minmax(0, 1fr);
+        gap: 12px;
+    }
+
+    .pdp-why-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 13px;
+        font-size: 1.2rem;
+    }
+
+    .pdp-timeline-stage {
+        grid-template-columns: 36px minmax(0, 1fr);
+        column-gap: 14px;
+    }
+
+    .pdp-timeline-line {
+        left: 17px;
+    }
+
+    .pdp-timeline-dot {
+        width: 18px;
+        height: 18px;
+        box-shadow: 0 0 0 3px #fff;
+    }
+
+    .pdp-timeline-photo {
+        height: auto;
+        aspect-ratio: 4 / 3;
+    }
+
+    .pdp-evidence-source {
+        flex-direction: column;
+    }
+
+    .pdp-mission-principle iconify-icon {
+        font-size: 2.35rem;
+    }
+
+    .pdp-routine-icon {
+        width: 104px;
+        height: 104px;
+    }
+
+    .pdp-routine-tip {
+        gap: 10px;
+        font-size: 0.84rem;
+    }
+
+    .cart-drawer-header,
+    .cart-items,
+    .cart-footer {
+        padding-right: 16px;
+        padding-left: 16px;
+    }
+
+    .sticky-cta-inner {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 6px 12px;
+    }
+
+    .sticky-cta-product {
+        display: block;
+        min-width: 0;
+    }
+
+    .sticky-cta-product img,
+    .sticky-cta-name,
+    .sticky-cta-price s {
+        display: none;
+    }
+
+    .sticky-cta-pack {
+        margin: 0;
+        color: var(--surface-dark);
+        font-size: 0.88rem;
+        font-weight: 800;
+    }
+
+    .sticky-cta-price {
+        display: flex;
+        margin-left: 0;
+        align-self: center;
+    }
+
+    .sticky-cta-price span {
+        font-size: 1.05rem;
+    }
+
+    .sticky-cta-button {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+
+    .lightbox-image {
+        max-width: 80vw;
     }
 }
