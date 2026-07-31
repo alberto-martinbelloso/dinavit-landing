@@ -1,6 +1,6 @@
 const PRODUCT = {
     name: "Creatina Monohidrato Micronizada",
-    image: "images/producto/producto-1.png",
+    image: "/images/new/prod-1.jpg",
 };
 
 const packButtons = document.querySelectorAll(".pdp-pack");
