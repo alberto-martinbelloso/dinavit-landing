@@ -89,11 +89,13 @@ let currentImageIndex = 0;
 function selectImage(index) {
     currentImageIndex = (index + galleryImages.length) % galleryImages.length;
     thumbButtons.forEach((btn) => btn.classList.remove("is-active"));
-    thumbButtons[currentImageIndex].classList.add("is-active");
-    thumbButtons[currentImageIndex].scrollIntoView({
+    const activeThumb = thumbButtons[currentImageIndex];
+    activeThumb.classList.add("is-active");
+    thumbsTrack.scrollTo({
+        left:
+            activeThumb.offsetLeft -
+            (thumbsTrack.clientWidth - activeThumb.offsetWidth) / 2,
         behavior: "smooth",
-        inline: "center",
-        block: "nearest",
     });
     mainImage.src = galleryImages[currentImageIndex];
 }

@@ -44,16 +44,30 @@
 .pdp-hero {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(340px, 0.92fr);
-    gap: 44px;
+    grid-template-areas:
+        "title title"
+        "gallery info";
+    column-gap: 44px;
+    row-gap: 16px;
     align-items: start;
     padding-top: 34px;
 }
 
+.pdp-title {
+    grid-area: title;
+    font-size: clamp(1.9rem, 3.6vw, 2.6rem);
+    line-height: 1.06;
+    text-align: center;
+}
+
+.pdp-gallery {
+    grid-area: gallery;
+    overflow-anchor: none;
+}
+
 .pdp-gallery-main-wrap {
     position: relative;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    display: block;
 }
 
 .pdp-gallery-main {
@@ -62,8 +76,8 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: clamp(380px, 42vw, 600px);
-    padding: 24px;
+    height: clamp(460px, 38vw, 520px);
+    padding: 0;
     border: 0;
     box-sizing: border-box;
     background: transparent;
@@ -75,10 +89,8 @@
 }
 
 .pdp-gallery-main img {
-    max-width: 100%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
 }
 
@@ -99,6 +111,9 @@
 }
 
 .pdp-gallery-nav {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
     flex: 0 0 auto;
     display: flex;
     align-items: center;
@@ -112,12 +127,21 @@
     color: var(--surface-dark);
     font-size: 1.2rem;
     cursor: pointer;
+    transform: translateY(-50%);
     transition: transform 160ms ease, background-color 160ms ease;
 }
 
 .pdp-gallery-nav:hover {
     background: rgba(47, 106, 80, 0.08);
-    transform: translateY(-1px);
+    transform: translateY(-50%);
+}
+
+.pdp-gallery-prev {
+    left: -20px;
+}
+
+.pdp-gallery-next {
+    right: -20px;
 }
 
 .pdp-thumbs-wrap {
@@ -195,6 +219,7 @@
 }
 
 .pdp-info {
+    grid-area: info;
     display: flex;
     flex-direction: column;
 }
@@ -206,11 +231,6 @@
     font-weight: 800;
     letter-spacing: 0.04em;
     color: var(--accent-deep);
-}
-
-.pdp-info h1 {
-    font-size: clamp(1.9rem, 3.6vw, 2.6rem);
-    line-height: 1.06;
 }
 
 .pdp-subtitle {
@@ -2007,6 +2027,16 @@ body.has-sticky-cta .page-shell {
 @media (max-width: 1120px) {
     .pdp-hero {
         grid-template-columns: 1fr;
+        grid-template-areas:
+            "title"
+            "gallery"
+            "info";
+        column-gap: 0;
+        row-gap: 16px;
+    }
+
+    .pdp-title {
+        text-align: left;
     }
 
     .pdp-why {
@@ -2066,11 +2096,8 @@ body.has-sticky-cta .page-shell {
 @media (min-width: 1600px) {
     .pdp-hero {
         grid-template-columns: minmax(0, 1.05fr) minmax(480px, 0.95fr);
-        gap: 64px;
-    }
-
-    .pdp-gallery-main {
-        height: min(42vw, 660px);
+        column-gap: 64px;
+        row-gap: 16px;
     }
 
     .pdp-science,
@@ -2095,7 +2122,8 @@ body.has-sticky-cta .page-shell {
     }
 
     .pdp-hero {
-        gap: 36px;
+        column-gap: 36px;
+        row-gap: 16px;
     }
 
     .pdp-routine-step {
@@ -2105,13 +2133,9 @@ body.has-sticky-cta .page-shell {
 }
 
 @media (max-width: 1120px) {
-    .pdp-gallery-main {
-        height: clamp(440px, 62vw, 620px);
-    }
-
     .pdp-info {
         max-width: 760px;
-        margin: 0 auto;
+        margin: 12px auto 0;
     }
 
     .pdp-why,
@@ -2211,7 +2235,8 @@ body.has-sticky-cta .page-shell {
     .pdp-hero {
         min-width: 0;
         grid-template-columns: minmax(0, 1fr);
-        gap: 28px;
+        column-gap: 0;
+        row-gap: 16px;
         padding-top: 20px;
     }
 
@@ -2229,8 +2254,8 @@ body.has-sticky-cta .page-shell {
     }
 
     .pdp-gallery-main {
-        height: min(112vw, 500px);
-        padding: 12px 30px;
+        height: min(78vw, 360px);
+        padding: 0 30px;
     }
 
     .pdp-gallery-nav {
@@ -2279,7 +2304,7 @@ body.has-sticky-cta .page-shell {
         height: 64px;
     }
 
-    .pdp-info h1 {
+    .pdp-title {
         font-size: clamp(1.95rem, 9vw, 2.6rem);
     }
 
@@ -2491,7 +2516,7 @@ body.has-sticky-cta .page-shell {
     }
 
     .pdp-gallery-main {
-        height: min(118vw, 430px);
+        height: min(78vw, 340px);
         padding-right: 26px;
         padding-left: 26px;
     }
