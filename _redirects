@@ -1,3 +1,10 @@
 /producto      /productos/creatina  301
 /producto.html /productos/creatina  301
 /confirmacion-email /email-confirmed 301
+/sin-stock     /out-of-stock 301
+
+# URLs antiguas con extensión .html: estaban indexadas y enlazadas desde fuera.
+/politica-privacidad.html /politica-privacidad 301
+/politica-cookies.html    /politica-cookies    301
+/aviso-legal.html         /aviso-legal         301
+/email-confirmed.html     /email-confirmed     301

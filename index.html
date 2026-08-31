@@ -32,7 +32,7 @@
         <meta property="og:locale" content="es_ES" />
         <meta
             property="og:image"
-            content="https://www.dinavit.com/images/image1.png"
+            content="https://www.dinavit.com/images/home/hero.png"
         />
 
         <meta name="twitter:card" content="summary_large_image" />
@@ -46,7 +46,7 @@
         />
         <meta
             name="twitter:image"
-            content="https://www.dinavit.com/images/image1.png"
+            content="https://www.dinavit.com/images/home/hero.png"
         />
 
         <link rel="icon" type="image/x-icon" href="favicon.ico" />
@@ -62,6 +62,7 @@
         />
         <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
         <link rel="stylesheet" href="styles.css" />
+        <link rel="stylesheet" href="/cookies.css" />
         <script type="application/ld+json">
             {
                 "@context": "https://schema.org",
@@ -70,7 +71,7 @@
                         "@type": "Organization",
                         "name": "Dinavit",
                         "url": "https://www.dinavit.com/",
-                        "logo": "https://www.dinavit.com/logo-black.svg",
+                        "logo": "https://www.dinavit.com/images/brand/logo-black.svg",
                         "email": "hello@dinavit.com"
                     },
                     {
@@ -94,7 +95,7 @@
         <div class="page-shell">
             <header class="site-header">
                 <a class="brand" aria-label="Dinavit">
-                    <img src="logo-black.svg" alt="Dinavit" />
+                    <img src="images/brand/logo-black.svg" alt="Dinavit" />
                 </a>
                 <button class="nav-cta" type="button" data-scroll-target="#cta">
                     Acceso anticipado
@@ -117,11 +118,11 @@
                         <div class="image-card image-card-main hero-image">
                             <picture>
                                 <source
-                                    srcset="images/image1.webp"
+                                    srcset="images/home/hero.webp"
                                     type="image/webp"
                                 />
                                 <img
-                                    src="images/image1.png"
+                                    src="images/home/hero.png"
                                     alt="Persona entrenando con energía y confianza"
                                     width="1536"
                                     height="1024"
@@ -320,11 +321,11 @@
                     <div class="image-card image-card-offset">
                         <picture>
                             <source
-                                srcset="images/image2.webp"
+                                srcset="images/home/active-senior.webp"
                                 type="image/webp"
                             />
                             <img
-                                src="images/image2.png"
+                                src="images/home/active-senior.png"
                                 alt="Persona mayor activa, fuerte y en movimiento"
                                 width="1024"
                                 height="1536"
@@ -400,7 +401,7 @@
             <footer class="site-footer reveal">
                 <div>
                     <img
-                        src="logo-white.png"
+                        src="images/brand/logo-white.png"
                         alt="Dinavit"
                         class="footer-logo"
                     />
@@ -408,19 +409,19 @@
                 <div class="footer-meta">
                     <nav class="footer-legal" aria-label="Enlaces legales">
                         <a
-                            href="politica-privacidad.html"
+                            href="/politica-privacidad"
                             target="_blank"
                             rel="noopener noreferrer"
                             >Política de Privacidad</a
                         >
                         <a
-                            href="politica-cookies.html"
+                            href="/politica-cookies"
                             target="_blank"
                             rel="noopener noreferrer"
                             >Política de Cookies</a
                         >
                         <a
-                            href="aviso-legal.html"
+                            href="/aviso-legal"
                             target="_blank"
                             rel="noopener noreferrer"
                             >Aviso legal</a
@@ -460,7 +461,7 @@
                 <p class="cookie-banner__links">
                     Más información en
                     <a
-                        href="politica-cookies.html"
+                        href="/politica-cookies"
                         target="_blank"
                         rel="noopener noreferrer"
                         >Política de Cookies</a
@@ -490,6 +491,7 @@
             );
             ml("account", "2124891");
         </script>
+        <script src="/config.js"></script>
         <script src="app.js"></script>
     </body>
 </html>

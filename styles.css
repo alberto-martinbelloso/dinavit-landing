@@ -723,100 +723,8 @@ h2 {
     border-color: rgba(255, 245, 235, 0.9);
 }
 
-.cookie-banner {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 60;
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    transform: none;
-}
-
-.cookie-banner::before {
-    content: "";
-    position: absolute;
-    left: 50%;
-    width: 100vw;
-    transform: translateX(-50%);
-    top: -3px;
-    height: 4px;
-    background: linear-gradient(
-        to top,
-        rgba(21, 34, 29, 0.06),
-        rgba(21, 34, 29, 0)
-    );
-    pointer-events: none;
-}
-
-.cookie-banner[hidden] {
-    display: none !important;
-}
-
-.cookie-banner__content {
-    width: 100%;
-    background: #edf7ef;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
-    padding: 22px 20px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.cookie-banner__title {
-    margin: 0;
-    color: var(--surface-dark);
-    font-family: "Inter Tight", sans-serif;
-    font-size: 1.3rem;
-    font-weight: 800;
-}
-
-.cookie-banner__text {
-    margin: 10px 0 0;
-    color: #3a4c44;
-    font-size: 1rem;
-    line-height: 1.55;
-    max-width: 64ch;
-}
-
-.cookie-banner__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 14px;
-    justify-content: center;
-}
-
-.cookie-btn {
-    border: 1px solid rgba(22, 53, 44, 0.22);
-    background: #ffffff;
-    color: var(--surface-dark);
-    border-radius: 999px;
-    padding: 8px 14px;
-    font-size: 0.9rem;
-    cursor: pointer;
-}
-
-.cookie-btn--primary {
-    background: var(--accent);
-    color: #ffffff;
-    border-color: var(--accent);
-}
-
-.cookie-banner__links {
-    margin: 12px 0 0;
-    font-size: 0.88rem;
-    color: #4a5f55;
-}
-
-.cookie-banner__links a {
-    color: var(--accent-deep);
-}
+/* El banner de cookies vive en cookies.css (compartido con la ficha de
+   producto y la página de agotado). */
 
 .footer-link {
     margin-bottom: 18px;
@@ -906,10 +814,6 @@ h2 {
 
     .site-footer {
         padding-top: 22px;
-    }
-
-    .cookie-banner__content {
-        padding: 14px;
     }
 
     .site-header .brand {

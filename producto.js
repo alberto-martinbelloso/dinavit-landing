@@ -1,6 +1,6 @@
 const PRODUCT = {
     name: "Creatina Monohidrato Micronizada",
-    image: "/images/new/prod-1.jpg",
+    image: "/images/product/gallery-1.jpg",
 };
 
 const packButtons = document.querySelectorAll(".pdp-pack");
@@ -39,8 +39,7 @@ const cartEmptyEl = document.getElementById("cart-empty");
 const cartSubtotalEl = document.getElementById("cart-subtotal");
 const cartCheckoutButton = document.getElementById("cart-checkout");
 
-const soldoutOverlay = document.getElementById("soldout-overlay");
-const soldoutClose = document.getElementById("soldout-close");
+const OUT_OF_STOCK_URL = "/out-of-stock";
 
 const stickyCta = document.getElementById("sticky-cta");
 const stickyAddToCartButton = document.getElementById("sticky-add-to-cart");
@@ -67,6 +66,33 @@ function updateStickyCta() {
 
 function formatPrice(value) {
     return `${value.toFixed(2).replace(".", ",")} €`;
+}
+
+function trackProductEvent(name, params) {
+    window.trackEvent?.(name, params);
+}
+
+function trackProductEventAndNavigate(name, params, url) {
+    if (window.trackEventAndNavigate) {
+        window.trackEventAndNavigate(name, params, url);
+        return;
+    }
+
+    window.location.href = url;
+}
+
+function cartValue() {
+    return cart.reduce((total, item) => total + item.price * item.qty, 0);
+}
+
+function cartAnalyticsItems() {
+    return cart.map((item) => ({
+        item_id: item.packId,
+        item_name: PRODUCT.name,
+        item_variant: item.label,
+        price: item.price,
+        quantity: item.qty,
+    }));
 }
 
 packButtons.forEach((button) => {
@@ -277,6 +303,20 @@ function addSelectedPackToCart() {
 
     renderCart();
     openCart();
+
+    trackProductEvent("add_to_cart", {
+        currency: "EUR",
+        value: price,
+        items: [
+            {
+                item_id: packId,
+                item_name: PRODUCT.name,
+                item_variant: label,
+                price,
+                quantity: 1,
+            },
+        ],
+    });
 }
 
 addToCartButton.addEventListener("click", addSelectedPackToCart);
@@ -314,19 +354,28 @@ cartCheckoutButton.addEventListener("click", () => {
     if (cart.length === 0) {
         return;
     }
-    closeCart();
-    soldoutOverlay.hidden = false;
-});
 
-function closeSoldout() {
-    soldoutOverlay.hidden = true;
-}
-
-soldoutClose.addEventListener("click", closeSoldout);
-soldoutOverlay.addEventListener("click", (event) => {
-    if (event.target === soldoutOverlay) {
-        closeSoldout();
-    }
+    trackProductEventAndNavigate(
+        "begin_checkout",
+        {
+            currency: "EUR",
+            value: cartValue(),
+            items: cartAnalyticsItems(),
+        },
+        OUT_OF_STOCK_URL,
+    );
 });
 
 renderCart();
+
+trackProductEvent("view_item", {
+    currency: "EUR",
+    value: selectedPack ? parseFloat(selectedPack.getAttribute("data-price")) : 0,
+    items: [
+        {
+            item_id: selectedPack?.getAttribute("data-pack-id"),
+            item_name: PRODUCT.name,
+            item_variant: selectedPack?.getAttribute("data-label"),
+        },
+    ],
+});

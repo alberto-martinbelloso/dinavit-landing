@@ -111,7 +111,71 @@ function loadGoogleAnalyticsIfConfigured() {
         analytics_storage: "granted",
     });
     gtag("config", measurementId, { anonymize_ip: true });
+
+    flushPendingEvents();
 }
+
+const MAX_PENDING_EVENTS = 20;
+const pendingEvents = [];
+
+// Envía un evento a GA4. Si el visitante todavía no ha respondido al banner,
+// el evento se guarda en memoria (no en el dispositivo) y solo se envía si
+// acepta; si rechaza, se descarta. Sin esto perderíamos siempre los eventos
+// que ocurren antes de que decida, como el view_item de la carga inicial.
+function trackEvent(name, params = {}) {
+    if (typeof window.gtag !== "function") {
+        if (pendingEvents.length < MAX_PENDING_EVENTS) {
+            pendingEvents.push({ name, params });
+        }
+
+        return;
+    }
+
+    window.gtag("event", name, params);
+}
+
+// Los eventos en cola llegan a GA con la hora del envío, no la del clic.
+function flushPendingEvents() {
+    if (typeof window.gtag !== "function") {
+        return;
+    }
+
+    while (pendingEvents.length > 0) {
+        const { name, params } = pendingEvents.shift();
+        window.gtag("event", name, params);
+    }
+}
+
+function discardPendingEvents() {
+    pendingEvents.length = 0;
+}
+
+// Envía un evento y navega después. Sin esto, la navegación puede cancelar la
+// petición del evento antes de que salga. GA4 avisa por event_callback; el
+// temporizador garantiza que el usuario navegue aunque el aviso no llegue.
+function trackEventAndNavigate(name, params, url) {
+    if (typeof window.gtag !== "function") {
+        window.location.href = url;
+        return;
+    }
+
+    let hasNavigated = false;
+
+    function navigate() {
+        if (hasNavigated) {
+            return;
+        }
+
+        hasNavigated = true;
+        window.location.href = url;
+    }
+
+    window.gtag("event", name, { ...params, event_callback: navigate });
+    window.setTimeout(navigate, 600);
+}
+
+window.trackEvent = trackEvent;
+window.trackEventAndNavigate = trackEventAndNavigate;
 
 function clearCookie(name) {
     const secure = window.location.protocol === "https:" ? "; Secure" : "";
@@ -119,6 +183,8 @@ function clearCookie(name) {
 }
 
 function disableGoogleAnalyticsIfConfigured() {
+    discardPendingEvents();
+
     const measurementId = getAnalyticsMeasurementId();
     if (measurementId) {
         window[`ga-disable-${measurementId}`] = true;

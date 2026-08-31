@@ -1753,67 +1753,6 @@
     cursor: not-allowed;
 }
 
-/* Sold out overlay */
-.soldout-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background: rgba(16, 26, 21, 0.6);
-    backdrop-filter: blur(3px);
-}
-
-.soldout-overlay[hidden] {
-    display: none;
-}
-
-.soldout-card {
-    position: relative;
-    width: min(480px, 100%);
-    max-height: 90vh;
-    overflow-y: auto;
-    background: #fff;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow);
-    padding: 40px 32px;
-    text-align: center;
-}
-
-.soldout-icon {
-    font-size: 2.4rem;
-    color: var(--accent);
-}
-
-.soldout-card h2 {
-    margin-top: 14px;
-    font-size: clamp(1.5rem, 3vw, 2rem);
-}
-
-.soldout-card p {
-    margin: 14px 0 0;
-    color: var(--muted);
-    line-height: 1.65;
-}
-
-.soldout-close {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    width: 34px;
-    height: 34px;
-    border: 0;
-    border-radius: 999px;
-    background: rgba(21, 34, 29, 0.06);
-    cursor: pointer;
-}
-
-.soldout-card .ml-embedded {
-    margin-top: 22px;
-}
-
 /* Sticky add-to-cart bar */
 .sticky-cta {
     position: fixed;
