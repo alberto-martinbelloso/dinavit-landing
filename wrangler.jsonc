@@ -1,0 +1,19 @@
+{
+    // IMPORTANTE: "name" debe coincidir exactamente con el nombre del Worker que
+    // ya existe (panel → tu Worker → Settings → General → Name). Si no coincide,
+    // el despliegue crea un Worker NUEVO en lugar de actualizar el tuyo.
+    "name": "dinavit",
+
+    // Misma fecha que tiene hoy el Worker, para que no cambie su comportamiento.
+    "compatibility_date": "2026-08-11",
+
+    // Sitio estático: no hay código de Worker, solo ficheros. La raíz del repo
+    // es la carpeta a publicar; lo que no debe subirse está en .assetsignore.
+    "assets": {
+        "directory": "./",
+
+        // Sirve /out-of-stock desde out-of-stock/index.html y redirige
+        // /politica-cookies.html a su versión sin extensión.
+        "html_handling": "auto-trailing-slash"
+    }
+}

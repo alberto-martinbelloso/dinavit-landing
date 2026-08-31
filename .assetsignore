@@ -1,0 +1,10 @@
+# Ficheros del repositorio que no forman parte de la web publicada.
+# Misma sintaxis que .gitignore.
+.git
+.gitignore
+.assetsignore
+wrangler.jsonc
+package.json
+package-lock.json
+node_modules
+.DS_Store
