@@ -1,5 +1,5 @@
 const PRODUCT = {
-    name: "Creatina Monohidrato Micronizada",
+    name: "Dinavit CORE",
     image: "/images/product/gallery-1.jpg",
 };
 

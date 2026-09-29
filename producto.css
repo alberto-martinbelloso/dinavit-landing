@@ -53,10 +53,21 @@
     padding-top: 34px;
 }
 
-.pdp-title {
+.pdp-heading {
     grid-area: title;
+    grid-column: 1 / -1;
+}
+
+.pdp-title {
     font-size: clamp(1.9rem, 3.6vw, 2.6rem);
     line-height: 1.06;
+    text-align: center;
+}
+
+.pdp-product-subtitle {
+    margin: 10px 0 0;
+    color: var(--muted);
+    font-size: 1.02rem;
     text-align: center;
 }
 
@@ -268,11 +279,108 @@
     margin: 22px 16px 0;
 }
 
+.pdp-included {
+    margin-top: 24px;
+    overflow: hidden;
+    border: 1px solid rgba(47, 106, 80, 0.28);
+    border-radius: 12px;
+    background: rgba(47, 106, 80, 0.06);
+}
+
+.pdp-included-heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(47, 106, 80, 0.18);
+}
+
+.pdp-included-heading > div {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+}
+
+.pdp-included-heading strong {
+    color: var(--accent-deep);
+    font-size: 0.88rem;
+    text-transform: uppercase;
+}
+
+.pdp-included-heading span:not(.pdp-included-gift) {
+    color: var(--muted);
+    font-size: 0.78rem;
+}
+
+.pdp-included-gift {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+}
+
+.pdp-included-items {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 0;
+    padding: 12px 8px;
+    list-style: none;
+}
+
+.pdp-included-items li {
+    display: flex;
+    min-width: 0;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 10px;
+    color: var(--surface-dark);
+    line-height: 1.25;
+    text-align: left;
+}
+
+.pdp-included-items li > div {
+    min-width: 0;
+}
+
+.pdp-included-items strong,
+.pdp-included-items span {
+    display: block;
+}
+
+.pdp-included-items strong {
+    font-size: 0.78rem;
+}
+
+.pdp-included-items span {
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 0.7rem;
+    font-weight: 500;
+    line-height: 1.35;
+}
+
+.pdp-included-items li + li {
+    border-left: 1px solid rgba(47, 106, 80, 0.18);
+}
+
+.pdp-included-items i {
+    flex: 0 0 auto;
+    color: var(--accent);
+    font-size: 1.35rem;
+}
+
 .pdp-packs {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
-    margin: 28px 0 0;
+    margin: 36px 0 0;
 }
 
 .pdp-pack {
@@ -681,6 +789,78 @@
 
 .pdp-science-callout i {
     color: inherit;
+}
+
+/* Formula difference */
+.pdp-difference {
+    width: min(1280px, var(--container));
+    padding-top: 64px;
+    padding-bottom: 70px;
+    background: #fff;
+}
+
+.pdp-difference-heading {
+    text-align: center;
+}
+
+.pdp-difference-heading p {
+    margin: 14px 0 0;
+    color: var(--muted);
+    font-size: 1.02rem;
+    line-height: 1.55;
+}
+
+.pdp-difference-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(56px, 7vw, 112px);
+    margin-top: 54px;
+}
+
+.pdp-difference-item {
+    text-align: center;
+}
+
+.pdp-difference-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border: 1px solid var(--surface-dark);
+    border-radius: 50%;
+    color: var(--surface-dark);
+    font-size: 1.85rem;
+}
+
+.pdp-difference-icon iconify-icon {
+    width: 2rem;
+    font-size: 2rem;
+}
+
+.pdp-difference-label {
+    display: block;
+    margin-top: 16px;
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.pdp-difference-item h3 {
+    margin: 9px 0 0;
+    color: var(--text);
+    font-family: "Inter Tight", sans-serif;
+    font-size: 1.35rem;
+    line-height: 1.2;
+}
+
+.pdp-difference-item p {
+    max-width: 320px;
+    margin: 10px auto 0;
+    color: var(--muted);
+    font-size: 0.94rem;
+    line-height: 1.6;
 }
 
 /* Story (bloque comentado en el HTML, se conserva el estilo) */
@@ -1974,10 +2154,6 @@ body.has-sticky-cta .page-shell {
         row-gap: 40px;
     }
 
-    .pdp-title {
-        text-align: left;
-    }
-
     .pdp-why {
         grid-template-columns: 1fr;
     }
@@ -2000,6 +2176,10 @@ body.has-sticky-cta .page-shell {
 }
 
 @media (max-width: 720px) {
+    .pdp-subtitle {
+        text-align: center;
+    }
+
     .pdp-packs {
         grid-template-columns: 1fr;
     }
@@ -2011,6 +2191,25 @@ body.has-sticky-cta .page-shell {
 
     .pdp-science-stats {
         grid-template-columns: 1fr;
+    }
+
+    .pdp-difference {
+        padding-top: 40px;
+        padding-bottom: 40px;
+    }
+
+    .pdp-difference-heading p br {
+        display: none;
+    }
+
+    .pdp-difference-grid {
+        grid-template-columns: 1fr;
+        gap: 34px;
+        margin-top: 34px;
+    }
+
+    .pdp-difference-item p {
+        max-width: 310px;
     }
 
     .pdp-how-grid {
@@ -2255,6 +2454,50 @@ body.has-sticky-cta .page-shell {
     .pdp-benefit-list {
         margin-right: 0;
         margin-left: 16px;
+    }
+
+    .pdp-included-heading {
+        align-items: flex-start;
+        padding: 10px 12px;
+    }
+
+    .pdp-included-heading > div {
+        display: block;
+    }
+
+    .pdp-included-heading span:not(.pdp-included-gift) {
+        display: block;
+        margin-top: 2px;
+    }
+
+    .pdp-included-items {
+        grid-template-columns: 1fr;
+        padding: 4px 12px;
+    }
+
+    .pdp-included-items li {
+        justify-content: flex-start;
+        gap: 10px;
+        padding: 10px 0;
+        text-align: left;
+    }
+
+    .pdp-included-items li + li {
+        border-top: 1px solid rgba(47, 106, 80, 0.18);
+        border-left: 0;
+    }
+
+    .pdp-included-items strong {
+        font-size: 0.76rem;
+    }
+
+    .pdp-included-items span {
+        margin-top: 3px;
+        font-size: 0.68rem;
+    }
+
+    .pdp-included-items i {
+        font-size: 1.25rem;
     }
 
     .pdp-packs {
