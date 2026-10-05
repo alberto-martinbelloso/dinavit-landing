@@ -898,6 +898,7 @@
     height: auto;
     align-self: end;
     margin-bottom: -24px;
+    filter: drop-shadow(0 22px 18px rgba(21, 34, 29, 0.2));
 }
 
 .pdp-timeline-track {
@@ -2002,6 +2003,10 @@ body.has-sticky-cta .page-shell {
     font-size: 0.8rem;
 }
 
+.sticky-cta-pack-product-name {
+    display: none;
+}
+
 .sticky-cta-price {
     display: none;
     align-items: baseline;
@@ -2373,9 +2378,19 @@ body.has-sticky-cta .page-shell {
     .pdp-hero {
         min-width: 0;
         grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "gallery"
+            "title"
+            "info";
         column-gap: 0;
-        row-gap: 40px;
+        row-gap: 32px;
         padding-top: 20px;
+    }
+
+    .pdp-heading {
+        width: min(100%, 560px);
+        margin: 0 auto;
+        text-align: center;
     }
 
     .pdp-gallery,
@@ -2813,6 +2828,10 @@ body.has-sticky-cta .page-shell {
         color: var(--surface-dark);
         font-size: 0.88rem;
         font-weight: 800;
+    }
+
+    .sticky-cta-pack-product-name {
+        display: inline;
     }
 
     .sticky-cta-price {

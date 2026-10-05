@@ -1,6 +1,6 @@
 const PRODUCT = {
     name: "Dinavit CORE",
-    image: "/images/product/gallery-1.jpg",
+    image: "/images/product/dinavit-core/1.png",
 };
 
 const packButtons = document.querySelectorAll(".pdp-pack");
