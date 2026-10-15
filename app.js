@@ -60,15 +60,20 @@ function setStoredConsent(consent) {
     }
 }
 
-function getAnalyticsMeasurementId() {
-    if (
-        typeof window.GA_MEASUREMENT_ID === "string" &&
-        window.GA_MEASUREMENT_ID.trim()
-    ) {
-        return window.GA_MEASUREMENT_ID.trim();
+function getConfigValue(key) {
+    if (typeof window[key] === "string" && window[key].trim()) {
+        return window[key].trim();
     }
 
     return null;
+}
+
+function getAnalyticsMeasurementId() {
+    return getConfigValue("GA_MEASUREMENT_ID");
+}
+
+function getMetaPixelId() {
+    return getConfigValue("META_PIXEL_ID");
 }
 
 function showCookieBanner() {
@@ -115,6 +120,42 @@ function loadGoogleAnalyticsIfConfigured() {
     flushPendingEvents();
 }
 
+// Equivale al código base oficial de Meta Pixel, pero se ejecuta solo tras el
+// consentimiento. fbq encola las llamadas hasta que se descarga fbevents.js.
+function loadMetaPixelIfConfigured() {
+    const pixelId = getMetaPixelId();
+
+    if (!pixelId || document.getElementById("meta-pixel-consent-script")) {
+        return;
+    }
+
+    if (typeof window.fbq !== "function") {
+        const fbq = function () {
+            fbq.callMethod
+                ? fbq.callMethod.apply(fbq, arguments)
+                : fbq.queue.push(arguments);
+        };
+
+        fbq.push = fbq;
+        fbq.loaded = true;
+        fbq.version = "2.0";
+        fbq.queue = [];
+        window.fbq = fbq;
+        window._fbq = window._fbq || fbq;
+    }
+
+    const script = document.createElement("script");
+    script.id = "meta-pixel-consent-script";
+    script.async = true;
+    script.src = "https://connect.facebook.net/en_US/fbevents.js";
+    document.head.appendChild(script);
+
+    window.fbq("init", pixelId);
+    window.fbq("track", "PageView");
+
+    flushPendingMetaEvents();
+}
+
 const MAX_PENDING_EVENTS = 20;
 const pendingEvents = [];
 
@@ -123,6 +164,8 @@ const pendingEvents = [];
 // acepta; si rechaza, se descarta. Sin esto perderíamos siempre los eventos
 // que ocurren antes de que decida, como el view_item de la carga inicial.
 function trackEvent(name, params = {}) {
+    trackMetaEvent(name, params);
+
     if (typeof window.gtag !== "function") {
         if (pendingEvents.length < MAX_PENDING_EVENTS) {
             pendingEvents.push({ name, params });
@@ -150,10 +193,64 @@ function discardPendingEvents() {
     pendingEvents.length = 0;
 }
 
+// Eventos de GA4 que también se envían a Meta, con su evento estándar.
+const META_EVENT_NAMES = {
+    view_item: "ViewContent",
+    add_to_cart: "AddToCart",
+    begin_checkout: "InitiateCheckout",
+};
+
+const pendingMetaEvents = [];
+
+function toMetaParams(params) {
+    const items = params.items || [];
+
+    return {
+        currency: params.currency,
+        value: params.value,
+        content_type: "product",
+        content_name: items[0]?.item_name,
+        content_ids: items.map((item) => item.item_id).filter(Boolean),
+        contents: items
+            .filter((item) => item.item_id)
+            .map((item) => ({ id: item.item_id, quantity: item.quantity ?? 1 })),
+    };
+}
+
+// Igual que trackEvent con GA: si el visitante aún no ha aceptado, el evento
+// espera en memoria y solo se envía a Meta si acepta.
+function trackMetaEvent(name, params) {
+    const metaName = META_EVENT_NAMES[name];
+    if (!metaName) {
+        return;
+    }
+
+    const metaParams = toMetaParams(params);
+
+    if (typeof window.fbq !== "function") {
+        if (pendingMetaEvents.length < MAX_PENDING_EVENTS) {
+            pendingMetaEvents.push({ metaName, metaParams });
+        }
+
+        return;
+    }
+
+    window.fbq("track", metaName, metaParams);
+}
+
+function flushPendingMetaEvents() {
+    while (pendingMetaEvents.length > 0) {
+        const { metaName, metaParams } = pendingMetaEvents.shift();
+        window.fbq("track", metaName, metaParams);
+    }
+}
+
 // Envía un evento y navega después. Sin esto, la navegación puede cancelar la
 // petición del evento antes de que salga. GA4 avisa por event_callback; el
 // temporizador garantiza que el usuario navegue aunque el aviso no llegue.
 function trackEventAndNavigate(name, params, url) {
+    trackMetaEvent(name, params);
+
     if (typeof window.gtag !== "function") {
         window.location.href = url;
         return;
@@ -177,9 +274,27 @@ function trackEventAndNavigate(name, params, url) {
 window.trackEvent = trackEvent;
 window.trackEventAndNavigate = trackEventAndNavigate;
 
+// GA y Meta escriben sus cookies en el dominio raíz (.dinavit.com), así que
+// para borrarlas hay que repetir el borrado indicando cada dominio padre.
 function clearCookie(name) {
     const secure = window.location.protocol === "https:" ? "; Secure" : "";
-    document.cookie = `${name}=; Max-Age=0; path=/; SameSite=Lax${secure}`;
+    const hostParts = window.location.hostname.split(".");
+    const domainAttributes = [""];
+
+    for (let i = 0; i < hostParts.length - 1; i += 1) {
+        domainAttributes.push(`; domain=.${hostParts.slice(i).join(".")}`);
+    }
+
+    domainAttributes.forEach((domain) => {
+        document.cookie = `${name}=; Max-Age=0; path=/${domain}; SameSite=Lax${secure}`;
+    });
+}
+
+function getCookieNames() {
+    return document.cookie
+        .split(";")
+        .map((cookie) => cookie.trim().split("=")[0])
+        .filter(Boolean);
 }
 
 function disableGoogleAnalyticsIfConfigured() {
@@ -199,18 +314,24 @@ function disableGoogleAnalyticsIfConfigured() {
         window.gtag("consent", "update", { analytics_storage: "denied" });
     }
 
-    const analyticsCookieNames = document.cookie
-        .split(";")
-        .map((cookie) => cookie.trim().split("=")[0])
+    getCookieNames()
         .filter(
             (name) =>
-                name &&
-                (name === "_gid" || name === "_gat" || name.startsWith("_ga")),
-        );
+                name === "_gid" || name === "_gat" || name.startsWith("_ga"),
+        )
+        .forEach(clearCookie);
+}
 
-    analyticsCookieNames.forEach((name) => {
-        clearCookie(name);
-    });
+function disableMetaPixel() {
+    pendingMetaEvents.length = 0;
+
+    if (typeof window.fbq === "function") {
+        window.fbq("consent", "revoke");
+    }
+
+    getCookieNames()
+        .filter((name) => name === "_fbp" || name === "_fbc")
+        .forEach(clearCookie);
 }
 
 function applyConsent(consent) {
@@ -221,10 +342,15 @@ function applyConsent(consent) {
         }
 
         loadGoogleAnalyticsIfConfigured();
-        return;
+    } else {
+        disableGoogleAnalyticsIfConfigured();
     }
 
-    disableGoogleAnalyticsIfConfigured();
+    if (consent?.marketing === true) {
+        loadMetaPixelIfConfigured();
+    } else {
+        disableMetaPixel();
+    }
 }
 
 function saveConsentAndClose(consent) {
@@ -240,6 +366,11 @@ if (currentYear) {
 const initialConsent = getStoredConsent();
 if (initialConsent) {
     applyConsent(initialConsent);
+}
+
+// Quien respondió al banner antes de añadir Meta solo consintió la analítica:
+// sin el campo marketing hay que volver a preguntarle.
+if (typeof initialConsent?.marketing === "boolean") {
     hideCookieBanner();
 } else {
     showCookieBanner();
@@ -250,12 +381,20 @@ cookieButtons.forEach((button) => {
         const action = button.getAttribute("data-cookie-action");
 
         if (action === "accept") {
-            saveConsentAndClose({ analytics: true, updatedAt: Date.now() });
+            saveConsentAndClose({
+                analytics: true,
+                marketing: true,
+                updatedAt: Date.now(),
+            });
             return;
         }
 
         if (action === "reject") {
-            saveConsentAndClose({ analytics: false, updatedAt: Date.now() });
+            saveConsentAndClose({
+                analytics: false,
+                marketing: false,
+                updatedAt: Date.now(),
+            });
             return;
         }
     });
