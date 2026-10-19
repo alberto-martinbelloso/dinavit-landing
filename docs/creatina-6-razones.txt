@@ -1,0 +1,139 @@
+DINAVIT CORE · 6 RAZONES PARA TU FUERZA
+Informe de integración — 19 de octubre de 2026
+
+NOMBRE Y DESTINO
+Nombre de la variante: «Dinavit CORE · 6 razones para tu fuerza».
+Ruta: /productos/creatina-6-razones
+Archivo: productos/creatina-6-razones/index.html.
+Es una presentación alternativa del mismo Dinavit CORE, no otro producto.
+El nombre se basa en la estructura de seis razones y el título del ZIP.
+La página actual /productos/creatina permanece intacta.
+
+TODAS LAS ADAPTACIONES RESPECTO AL ZIP
+
+1. Integración de archivos y rutas.
+   Se añade el HTML a la estructura de páginas del repositorio.
+   Se copian los 11 JPEG a /images/product/creatina-6-razones/ sin alterar
+   sus bytes, comprimirlos, recortarlos ni cambiar sus nombres.
+   Las rutas img/... pasan a rutas absolutas dentro del sitio.
+   El CSS inline se traslada a /creatina-6-razones.css.
+   El script inline se sustituye por /creatina-6-razones.js.
+   No se añaden dependencias ni se cambia la configuración de Cloudflare.
+
+2. Compra y carrito.
+   El enlace del ZIP «Añadir al carrito» enviaba directamente a
+   https://dinavit.com/out-of-stock/ sin crear carrito ni medir los pasos.
+   Ahora es un botón que añade el pack elegido a un carrito lateral.
+   Se añade un botón Carrito con contador en la cabecera.
+   El carrito permite sumar, restar y eliminar packs; calcula el subtotal,
+   muestra el estado vacío y desactiva Comprar si no contiene productos.
+   Comprar lleva a /out-of-stock mediante la función compartida que mide
+   el inicio del checkout antes de navegar, igual que la página actual.
+   Se mantiene el aviso de impuestos/envío de la página actual.
+   El carrito vive en memoria, igual que el de la página actual.
+   No se conecta una pasarela ni se registra una compra completada.
+
+3. Precios y referencias.
+   Los precios de venta del ZIP coinciden con la página actual y se mantienen:
+     1 bote: 24,95 €; 3 botes: 64,95 €; 5 botes: 99,95 €.
+   Se conservan los precios por bote y por día del diseño original.
+   Se conservan las referencias y los ahorros del HTML original del ZIP:
+     1 bote: precio base de 24,95 €, sin ahorro ni precio tachado.
+     3 botes: referencia de 74,85 €, ahorro de 9,90 €.
+     5 botes: referencia de 124,75 €, ahorro de 24,80 €.
+   La referencia para los packs es cantidad × precio base de 24,95 €.
+   El total inicial tachado es 74,85 €; al elegir un bote se oculta.
+   Por indicación del usuario, se ha revertido la adaptación inicial que
+   igualaba las referencias a los precios tachados de la página existente.
+   Se redondean los cálculos monetarios a céntimos.
+
+4. Selección inicial.
+   Se mantienen los 3 botes preseleccionados del ZIP (64,95 €).
+   La página actual preselecciona 1 bote. Esta diferencia forma parte de
+   las variantes: el experimento compara el conjunto de cada página,
+   no únicamente la presentación visual con idéntico estado inicial.
+
+5. Consentimiento y analítica.
+   Se integra el banner existente con Aceptar/Rechazar, /cookies.css,
+   /config.js y /app.js. Se reutilizan los mismos IDs de GA4 y Meta,
+   junto con el consentimiento compartido entre páginas.
+   La nueva página no carga por su cuenta ningún píxel de medición.
+   Se añaden view_item, add_to_cart y begin_checkout mediante las
+   funciones compartidas, que los convierten en los eventos de Meta
+   ViewContent, AddToCart e InitiateCheckout.
+   Se usan los mismos IDs de pack «1», «3» y «5», nombre Dinavit CORE,
+   moneda EUR, valores y cantidades por pack de la página actual.
+   Los eventos de GA4 incluyen landing_variant=creatina-6-razones.
+   El conversor de Meta existente no transmite ese parámetro personalizado;
+   en Meta se puede distinguir la variante por la URL de la página.
+   No se han creado campañas, experimentos ni conversiones en Meta/GA4.
+
+6. Metadatos y buscadores.
+   Se conserva el título del ZIP y su descripción.
+   Se añade noindex, follow por tratarse de una variante publicitaria.
+   La URL canónica apunta a /productos/creatina.
+   Se añaden metadatos Open Graph con título, descripción, tipo producto,
+   marca, idioma, URL propia y la imagen principal del ZIP.
+   Se añade twitter:card=summary_large_image, favicon, color del navegador
+   y format-detection=telephone=no.
+   No se incluye en el sitemap ni se enlaza desde la navegación existente:
+   se accede mediante su URL independiente para los anuncios.
+   No se implementa reparto aleatorio de tráfico ni redirección de la actual.
+
+7. Cabecera, pie y estructura.
+   El texto dinavit de la cabecera pasa a ser un enlace accesible al inicio.
+   Se añaden etiquetas header y main.
+   Se añaden enlaces a privacidad, cookies, aviso legal y hello@dinavit.com.
+   Se añade copyright con año actualizado por el script compartido.
+
+8. Accesibilidad e interacciones.
+   Los selectores tienen estado inicial aria-checked y navegación con
+   flechas, Inicio y Fin, y un único elemento de tabulación por grupo.
+   La galería tiene botones con nombres descriptivos y aria-pressed.
+   Al cambiar de imagen también se actualizan su texto alternativo y tamaño.
+   El total se anuncia con aria-live; se añaden estilos de foco visibles.
+   Los indicadores decorativos de la imagen principal se ocultan a lectores
+   de pantalla; se conservan como decoración, sin inventar un carrusel.
+   El carrito usa dialog nativo: retiene el foco, permite cerrarlo con
+   Escape, botón de cierre o clic fuera y bloquea el scroll del fondo.
+   Los controles de cantidades recuperan el foco tras actualizar el carrito.
+   Se respeta la preferencia del sistema de reducir el movimiento.
+
+9. Rendimiento y adaptación visual.
+   Se añaden dimensiones intrínsecas a las imágenes para reservar espacio,
+   decoding=async y carga diferida a imágenes secundarias.
+   La imagen principal tiene fetchpriority=high.
+   Se conserva el diseño adaptable del ZIP y sus puntos de corte.
+   Se añaden estilos del carrito/cabecera/pie y ajustes por debajo de 380 px
+   para espaciado, precios y línea de garantía.
+   No se introduce el CSS global del producto actual para evitar que cambie
+   el diseño suministrado. Solo se comparte el CSS de consentimiento.
+
+10. Corrección editorial puntual.
+    En la razón 04, «Ver nota del punto 02» pasa a «Ver nota del punto 01»:
+    el punto 01 contiene las condiciones completas de la nota referenciada.
+    Se conservan los demás argumentos, garantías, ingredientes, advertencias,
+    textos comerciales, regalos, fuentes tipográficas e imágenes del ZIP.
+
+11. Documentación de entrega.
+    Se añade este informe y se excluye docs/ de los assets publicados
+    mediante .assetsignore.
+
+VERIFICACIÓN
+- Sintaxis JavaScript comprobada con node --check.
+- Todos los destinos locales de enlaces, imágenes y scripts existen.
+- No hay IDs duplicados en el HTML.
+- Los 11 JPEG coinciden byte a byte con el ZIP.
+- Comprobaciones automatizadas de los tres precios y referencias, selección
+  por teclado, altas/sumas/restas/borrados de carrito, subtotal y estado vacío,
+  IDs/valores de eventos y destino del checkout: correctas.
+- Comprobación en navegador de escritorio: diseño, rechazo de cookies,
+  cambio de imagen en la galería, selección de un bote, apertura del carrito,
+  aumento de cantidad y navegación
+  a la página actual de falta de stock: correctos.
+- No se ha validado la recepción de eventos en cuentas externas ni se ha
+  realizado una prueba visual en un dispositivo móvil real.
+
+ESTADO
+Implementado y verificado en el repositorio local. Pendiente de despliegue
+mediante el flujo habitual de Cloudflare del proyecto.
