@@ -1,0 +1,210 @@
+NUEVA HOME DE DINAVIT
+Integración del 29 de octubre de 2026
+
+DESTINOS
+- Nueva home: / — archivo index.html principal.
+- Home anterior: código preservado en archive/inicio-anterior.html.
+- /inicio-anterior deja de existir como página pública; archive/ se excluye
+  por .assetsignore de los archivos enviados a Cloudflare.
+- Se conserva la home anterior completa, con su formulario y sus recursos.
+- No se ha desplegado en Cloudflare en esta tarea.
+
+TODAS LAS ADAPTACIONES
+
+1. Home anterior preservada.
+   Se conserva el código en archive/inicio-anterior.html, sin modificar sus
+   bytes respecto de la versión que estaba en /inicio-anterior.
+   Se elimina la carpeta pública inicio-anterior y se excluye archive/ en
+   .assetsignore. No se publica una ruta alternativa para descargar la copia.
+   Sus rutas relativas de CSS, JavaScript, favicon e imágenes pasan a rutas
+   absolutas desde / para que funcionen en la nueva carpeta.
+   Se conserva su contenido; por indicación posterior del usuario se retiran
+   GA4, Meta Pixel y el banner de consentimiento de esta home anterior.
+   Se cambia robots a noindex, follow y og:url a /inicio-anterior.
+   Su canonical y hreflang siguen apuntando a la home principal.
+   No se añade al sitemap ni a la navegación de la home nueva.
+
+2. Nueva home y archivos.
+   Se usa /Users/belloso/Downloads/dinavit-web/index.html como base.
+   Sus estilos inline se trasladan a /home.css.
+   Su script de carrusel se adapta a /home.js y el formulario de demostración
+   se reemplaza por el servicio real existente.
+   Las 10 imágenes se copian sin alterar sus bytes ni nombres a
+   /images/home/principal/. Las rutas img/... se actualizan a ese destino.
+   Se mantienen las fuentes Outfit y Figtree y la estructura visual aportada.
+   No se añaden dependencias, herramientas de compilación ni otra plataforma
+   de alojamiento. Se mantiene la configuración estática de Cloudflare.
+
+3. Precios y descuentos del archivo recibido.
+   Se mantienen exactamente los bloques de precios y sus distintivos:
+     1 bote: 24,95 €; referencia tachada 32,95 €; distintivo -24%.
+     3 botes: 64,95 €; referencia tachada 98,85 €; distintivo -34%.
+     5 botes: 99,95 €; referencia tachada 164,75 €; distintivo -39%.
+   También se mantienen los precios por bote, por día, el «Desde 19,99 €»,
+   los textos «hasta un 39%» y los regalos tal como vienen en este HTML.
+   No se aplican a esta home los cambios de ahorro de la variante listicle.
+
+4. Carrito compartido con la página original de creatina.
+   El archivo recibido solo tenía enlaces de demostración a #packs.
+   Los tres enlaces Añadir al carrito pasan a botones reales con los mismos
+   IDs de pack «1», «3» y «5» y precios totales de la página de producto.
+   El icono Carrito de la cabecera pasa a abrir el carrito y muestra contador.
+   Se extraen la lógica y los estilos del carrito de producto.js/producto.css
+   a /carrito.js y /carrito.css, usados tanto por la nueva home como por
+   /productos/creatina. No es otra implementación independiente del carrito.
+   La ficha de producto llama al módulo compartido conservando sus selectores,
+   galería, lightbox y botones principales, de garantía y de compra fija.
+   En la home, el carrito muestra la foto hero-producto.jpg del material nuevo;
+   en la ficha conserva su imagen original.
+   Se conservan sumar/restar/eliminar, subtotal, estado vacío, contador por
+   packs y botón Comprar desactivado cuando el carrito está vacío.
+   Se redondea el subtotal analítico a céntimos.
+   Comprar sigue llevando a /out-of-stock con la función compartida que mide
+   purchase_intent antes de navegar. No se incorpora una pasarela.
+   El contenido sigue viviendo en memoria: se vacía al recargar o cambiar de
+   página. Compartir el módulo no añade persistencia entre URLs.
+   La variante /productos/creatina-6-razones conserva su carrito previo.
+
+5. Accesibilidad del carrito compartido.
+   El panel recibe role=dialog, aria-modal y nombre accesible.
+   Cerrado queda oculto y sin controles accesibles mediante inert.
+   Abierto bloquea el scroll del fondo, lleva el foco al cierre, mantiene
+   la tabulación dentro y permite cerrar con Escape o el fondo.
+   Al cerrarlo devuelve el foco al control que lo abrió.
+   Al modificar cantidades conserva el foco en un control válido.
+   El subtotal se anuncia mediante aria-live; se añade foco visible y se
+   respeta la preferencia de movimiento reducido en las transiciones.
+   Estas mejoras se aplican a home y ficha al usar el mismo módulo.
+   Se mantiene el diseño del carrito original y se adapta a las variables
+   de color y tipografía de la home sin cargar el CSS global antiguo.
+
+6. Consentimiento y medición.
+   Se reutilizan /cookies.css y /config.js; se actualiza /app.js para limitar
+   la medición a las cuatro páginas autorizadas y reforzar el consentimiento.
+   Se añade el mismo banner Aceptar/Rechazar que ya usa el sitio, con su
+   consentimiento compartido y los IDs actuales de GA4 y Meta Pixel.
+   La home envía view_item y, al comprar, add_to_cart y purchase_intent.
+   Se usan Dinavit CORE, EUR, IDs «1», «3», «5», precio y cantidad por pack.
+   La vista inicial usa el pack de un bote como la ficha de producto actual;
+   no se añade automáticamente ningún pack al carrito.
+   Los eventos y vistas de la home incluyen landing_variant=home en GA4 y
+   Meta. La ficha original usa creatina; la variante usa creatina-6-razones.
+   Sin stock usa out-of-stock. Los eventos de Meta siguen siendo ViewContent,
+   AddToCart y purchase_intent (personalizado), además de PageView.
+   Solo se habilita medición en /, las dos fichas de producto y /out-of-stock.
+   Las páginas legales, email-confirmed e inicio-anterior quedan excluidas.
+   Rechazar cookies descarta eventos previos y bloquea los posteriores.
+   Volver a aceptar restablece el consentimiento de Meta sin duplicar el
+   inicio del píxel. Se añade una versión al script para renovar su caché.
+   Para ver landing_variant como dimensión de informes hay que registrarla
+   en GA4; ese ajuste de cuenta queda pendiente.
+   No se cambian las cuentas ni se configuran informes o campañas externos.
+
+7. Newsletter real.
+   Se elimina el formulario local que solo mostraba el mensaje de vista
+   previa sobre una futura conexión a Shopify/Klaviyo.
+   Se integra MailerLite con la cuenta 2124891 y el formulario c7hCg8 que ya
+   utilizaba la home anterior. Se conserva su lista y confirmación por email.
+   En la nueva home se cambia localmente el texto de su botón de acceso
+   anticipado a «Apuntarme», acorde con la sección de newsletter recibida.
+   Se mantiene el botón de carga y el funcionamiento del proveedor.
+   Se adapta el CSS para que los estilos del formulario de demostración no
+   oculten las etiquetas ni alteren los campos generados por MailerLite.
+   Se enlaza la mención de privacidad a /politica-privacidad.
+   No se crean listas ni automatizaciones ni se envían altas de prueba.
+
+8. Enlaces legales, contacto y fuentes.
+   Los enlaces de privacidad, cookies y aviso legal, antes dirigidos a #top,
+   apuntan a las páginas reales existentes del sitio.
+   «Envíos y devoluciones» apunta a una nueva nota dentro de la garantía,
+   usando el plazo de envío y la garantía ya escritos en el HTML e incluyendo
+   hello@dinavit.com para consultas y devoluciones. No se inventa una política
+   ni una página legal nueva.
+   El enlace Dinavit CORE del pie lleva a /productos/creatina-6-razones,
+   según la indicación del usuario.
+   La mención «Fuentes en la página de producto» pasa a ser un enlace a
+   /productos/creatina#pdp-science. Se añade ese ID a la sección existente
+   de ciencia de la ficha, sin cambiar su contenido.
+
+9. SEO y metadatos.
+   Se mantienen título y descripción del HTML recibido.
+   Se añade canonical y hreflang de la home principal, robots index/follow,
+   color del navegador y desactivación de detección automática de teléfonos.
+   Se sustituye el favicon de demostración (foto del bote) por /favicon.ico.
+   Se añaden Open Graph y Twitter Card con el título, descripción y nueva
+   imagen hombre-vaso.jpg, manteniendo marca, idioma y URL principal.
+   Se conserva el JSON-LD Organization/WebSite/WebPage de la home anterior,
+   actualizando la descripción de WebPage para la nueva home.
+   Se actualiza la fecha de la home en sitemap.xml a 2026-10-29.
+   El copyright conserva 2026 y usa el actualizador de año de app.js.
+
+10. Imágenes, navegación y ajustes visuales.
+    Se añaden dimensiones reales, decoding=async y carga diferida a imágenes
+    secundarias. La foto del hero tiene fetchpriority=high.
+    Se añade enlace Saltar al contenido y foco programable al main.
+    Los destinos de secciones tienen margen para la cabecera fija.
+    La tabla recibe cabeceras de fila y nombres Sí/No para sus iconos.
+    El carrusel conserva sus flechas; se añaden aria-controls y role=region,
+    y el desplazamiento respeta la preferencia de movimiento reducido.
+    Se añade pausa al pasar el ratón por las bandas animadas.
+    Se fija height:auto en la regla base de imágenes para que al reducir su
+    ancho no conserven la altura del atributo HTML. Corrige la miniatura
+    estirada de la cabecera de la tabla y mantiene las proporciones originales.
+    Se conservan los puntos de corte del diseño recibido y se ajusta la
+    cabecera y el tamaño de titulares/botones por debajo de 480 px.
+    Se recorta el desbordamiento horizontal exterior sin quitar el scroll
+    propio de la tabla y del carrusel.
+
+11. Textos y documentación.
+    Se conserva el contenido comercial del HTML recibido. Los únicos textos
+    añadidos son los controles accesibles, el carrito, el banner existente,
+    el contacto de envíos/devoluciones y el texto local del botón newsletter.
+    La mención de fuentes y la de privacidad pasan a ser enlaces.
+    Se añade este informe en docs/, ya excluido de los assets publicados.
+
+COMPROBACIONES REALIZADAS
+- Sintaxis de home.js, carrito.js y producto.js y git diff --check: correctos.
+- Rutas locales, fragmentos e IDs de home, home anterior y ficha: correctos.
+- Los 10 JPEG son idénticos a los aportados.
+- Los bloques de precios y distintivos son idénticos a los del HTML recibido.
+- El contenido de la home anterior se conserva, con las rutas adaptadas
+  y sin GA4, Meta Pixel ni el banner tras la última indicación del usuario.
+- Pruebas de carrito en contextos home/ficha: tres packs, cantidades,
+  subtotal, borrados, estado vacío, apertura/cierre, valores/IDs de eventos
+  y navegación de checkout: correctas.
+- Navegador de escritorio: home nueva, compra de packs, llegada a sin stock,
+  formulario newsletter y etiqueta Apuntarme, home anterior y sus dos embeds.
+- Regresión de ficha de creatina en navegador: selección de 3 botes, alta en
+  carrito, suma hasta 129,90 € y cambio de imagen en galería: correctos.
+- No se han observado errores JavaScript en las páginas comprobadas.
+- No se ha enviado una suscripción ni validado recepción en cuentas GA4/Meta.
+- La verificación visual móvil queda pendiente: el control de viewport no
+  aplicó las dimensiones solicitadas; el navegador siguió mostrando escritorio.
+- No hay despliegue realizado: los cambios están en el repositorio local.
+
+ACTUALIZACIÓN DE MEDICIÓN
+- npm test: quince comprobaciones correctas de cobertura de las cuatro páginas,
+  exclusión del resto, etiquetas de origen, consentimiento, descarte de eventos
+  rechazados, revocación, reaceptación e intención de compra.
+- Se comprueban también consentimiento pendiente antes de navegar, dobles clics,
+  restauración desde la caché del navegador, retornos y archivo fuera de publicación.
+- Los tests están en tests/analytics.test.cjs y se excluyen de la publicación.
+- La llegada a sin stock registra page_view/PageView, nunca Purchase. El clic
+  Comprar del carrito se registra como purchase_intent en GA4 y mediante
+  trackCustom en Meta. No se envían eventos de inicio de checkout ni Purchase.
+  Los enlaces Comprar que solo bajan a #packs no disparan purchase_intent.
+
+CORRECCIONES DE LA REVISIÓN
+1. Si se pulsa Comprar sin haber respondido al banner, se espera en la misma
+   página. Se cierra el carrito para hacer accesibles Aceptar y Rechazar.
+   Aceptar envía purchase_intent y continúa; Rechazar continúa sin enviarlo.
+   La intención pendiente solo se guarda en memoria, sin cookies ni storage.
+2. El primer clic bloquea los siguientes hasta salir. Al regresar mediante
+   la caché de navegación se restablece el bloqueo para permitir otro intento.
+3. La URL de sin stock conserva return_to con la URL de origen, parámetros y
+   fragmento. El enlace de regreso usa el historial si coincide con la página
+   anterior para recuperar la posición; si no, usa la URL explícita. Solo se
+   admiten la home y las dos fichas del mismo dominio. En acceso directo sin
+   origen válido, se vuelve a /. No se permite regresar a URLs externas.
+4. Los estilos de la tabla móvil no se modifican por indicación del usuario.
+5. Se actualizan los nombres de eventos y este informe para reflejar el código.

@@ -7,6 +7,73 @@ const cookieButtons = document.querySelectorAll("[data-cookie-action]");
 const COOKIE_CONSENT_KEY = "dinavit-cookie-consent";
 const COOKIE_CONSENT_NAME = "dinavit_cookie_consent";
 const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 180;
+let activeConsent = null;
+const trackingEnabled = document.body.dataset.trackingPage === "true";
+let navigationInProgress = false;
+let pendingNavigation = null;
+const RETURN_ROUTES = new Set(["/", "/productos/creatina", "/productos/creatina-6-razones"]);
+
+const PAGE_VARIANTS = {
+    "/": "home",
+    "/productos/creatina": "creatina",
+    "/productos/creatina-6-razones": "creatina-6-razones",
+    "/out-of-stock": "out-of-stock",
+    "/email-confirmed": "email-confirmed",
+    "/politica-privacidad": "politica-privacidad",
+    "/politica-cookies": "politica-cookies",
+    "/aviso-legal": "aviso-legal",
+};
+const pagePath = window.location.pathname.replace(/\/index\.html$/, "").replace(/\/$/, "") || "/";
+const pageVariant = document.body.dataset.landingVariant || PAGE_VARIANTS[pagePath] || pagePath;
+
+function withPageContext(params = {}) {
+    return { ...params, landing_variant: pageVariant };
+}
+
+// Only return to our home or product pages, never an external URL supplied
+// through the query string. Preserve query parameters and section anchors.
+function allowedReturnURL(value) {
+    if (!value) return null;
+    try {
+        const candidate = new URL(value, window.location.origin);
+        const route = candidate.pathname.replace(/\/index\.html$/, "").replace(/\/$/, "") || "/";
+        if (candidate.origin !== window.location.origin || !RETURN_ROUTES.has(route)) return null;
+        return candidate;
+    } catch {
+        return null;
+    }
+}
+
+function purchaseDestination(url) {
+    const destination = new URL(url, window.location.origin);
+    const origin = allowedReturnURL(window.location.href);
+    if (destination.origin === window.location.origin &&
+        destination.pathname.replace(/\/$/, "") === "/out-of-stock" && origin) {
+        destination.searchParams.set("return_to", origin.pathname + origin.search + origin.hash);
+        return destination.pathname + destination.search + destination.hash;
+    }
+    return url;
+}
+
+function configureReturnLink() {
+    const link = document.getElementById("return-to-origin");
+    if (!link) return;
+    const current = new URL(window.location.href);
+    const origin = allowedReturnURL(current.searchParams.get("return_to")) ||
+        allowedReturnURL(document.referrer);
+    link.href = origin ? origin.pathname + origin.search + origin.hash : "/";
+    const referrer = allowedReturnURL(document.referrer);
+    if (origin && referrer && origin.pathname === referrer.pathname &&
+        origin.search === referrer.search && window.history.length > 1) {
+        // Back restores the exact scroll position and, when available, the
+        // browser's cached cart. The href remains a safe fallback for new tabs.
+        link.addEventListener("click", (event) => {
+            if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+            event.preventDefault();
+            window.history.back();
+        });
+    }
+}
 
 function getCookieValue(name) {
     const key = `${name}=`;
@@ -69,11 +136,11 @@ function getConfigValue(key) {
 }
 
 function getAnalyticsMeasurementId() {
-    return getConfigValue("GA_MEASUREMENT_ID");
+    return trackingEnabled ? getConfigValue("GA_MEASUREMENT_ID") : null;
 }
 
 function getMetaPixelId() {
-    return getConfigValue("META_PIXEL_ID");
+    return trackingEnabled ? getConfigValue("META_PIXEL_ID") : null;
 }
 
 function showCookieBanner() {
@@ -115,7 +182,7 @@ function loadGoogleAnalyticsIfConfigured() {
     gtag("consent", "default", {
         analytics_storage: "granted",
     });
-    gtag("config", measurementId, { anonymize_ip: true });
+    gtag("config", measurementId, { anonymize_ip: true, landing_variant: pageVariant });
 
     flushPendingEvents();
 }
@@ -125,7 +192,13 @@ function loadGoogleAnalyticsIfConfigured() {
 function loadMetaPixelIfConfigured() {
     const pixelId = getMetaPixelId();
 
-    if (!pixelId || document.getElementById("meta-pixel-consent-script")) {
+    if (!pixelId) {
+        return;
+    }
+
+    if (document.getElementById("meta-pixel-consent-script")) {
+        window.fbq("consent", "grant");
+        flushPendingMetaEvents();
         return;
     }
 
@@ -150,8 +223,9 @@ function loadMetaPixelIfConfigured() {
     script.src = "https://connect.facebook.net/en_US/fbevents.js";
     document.head.appendChild(script);
 
+    window.fbq("consent", "grant");
     window.fbq("init", pixelId);
-    window.fbq("track", "PageView");
+    window.fbq("track", "PageView", withPageContext());
 
     flushPendingMetaEvents();
 }
@@ -164,9 +238,15 @@ const pendingEvents = [];
 // acepta; si rechaza, se descarta. Sin esto perderíamos siempre los eventos
 // que ocurren antes de que decida, como el view_item de la carga inicial.
 function trackEvent(name, params = {}) {
+    if (!trackingEnabled) return;
+    params = withPageContext(params);
     trackMetaEvent(name, params);
 
-    if (typeof window.gtag !== "function") {
+    if (activeConsent?.analytics === false) {
+        return;
+    }
+
+    if (activeConsent?.analytics !== true || typeof window.gtag !== "function") {
         if (pendingEvents.length < MAX_PENDING_EVENTS) {
             pendingEvents.push({ name, params });
         }
@@ -179,7 +259,7 @@ function trackEvent(name, params = {}) {
 
 // Los eventos en cola llegan a GA con la hora del envío, no la del clic.
 function flushPendingEvents() {
-    if (typeof window.gtag !== "function") {
+    if (activeConsent?.analytics !== true || typeof window.gtag !== "function") {
         return;
     }
 
@@ -193,11 +273,11 @@ function discardPendingEvents() {
     pendingEvents.length = 0;
 }
 
-// Eventos de GA4 que también se envían a Meta, con su evento estándar.
+// Eventos de GA4 que también se envían a Meta; purchase_intent es personalizado.
 const META_EVENT_NAMES = {
     view_item: "ViewContent",
     add_to_cart: "AddToCart",
-    begin_checkout: "InitiateCheckout",
+    purchase_intent: "purchase_intent",
 };
 
 const pendingMetaEvents = [];
@@ -214,44 +294,48 @@ function toMetaParams(params) {
         contents: items
             .filter((item) => item.item_id)
             .map((item) => ({ id: item.item_id, quantity: item.quantity ?? 1 })),
+        landing_variant: pageVariant,
     };
 }
 
 // Igual que trackEvent con GA: si el visitante aún no ha aceptado, el evento
 // espera en memoria y solo se envía a Meta si acepta.
 function trackMetaEvent(name, params) {
+    if (!trackingEnabled) return;
     const metaName = META_EVENT_NAMES[name];
-    if (!metaName) {
+    if (!metaName || activeConsent?.marketing === false) {
         return;
     }
 
     const metaParams = toMetaParams(params);
+    const command = name === "purchase_intent" ? "trackCustom" : "track";
 
-    if (typeof window.fbq !== "function") {
+    if (activeConsent?.marketing !== true || typeof window.fbq !== "function") {
         if (pendingMetaEvents.length < MAX_PENDING_EVENTS) {
-            pendingMetaEvents.push({ metaName, metaParams });
+            pendingMetaEvents.push({ command, metaName, metaParams });
         }
 
         return;
     }
 
-    window.fbq("track", metaName, metaParams);
+    window.fbq(command, metaName, metaParams);
 }
 
 function flushPendingMetaEvents() {
+    if (activeConsent?.marketing !== true || typeof window.fbq !== "function") {
+        return;
+    }
     while (pendingMetaEvents.length > 0) {
-        const { metaName, metaParams } = pendingMetaEvents.shift();
-        window.fbq("track", metaName, metaParams);
+        const { command, metaName, metaParams } = pendingMetaEvents.shift();
+        window.fbq(command, metaName, metaParams);
     }
 }
 
-// Envía un evento y navega después. Sin esto, la navegación puede cancelar la
-// petición del evento antes de que salga. GA4 avisa por event_callback; el
-// temporizador garantiza que el usuario navegue aunque el aviso no llegue.
-function trackEventAndNavigate(name, params, url) {
+// Called only once for a click (or after the pending consent decision).
+function sendEventAndNavigate(name, params, url) {
     trackMetaEvent(name, params);
 
-    if (typeof window.gtag !== "function") {
+    if (activeConsent?.analytics !== true || typeof window.gtag !== "function") {
         window.location.href = url;
         return;
     }
@@ -270,6 +354,36 @@ function trackEventAndNavigate(name, params, url) {
     window.gtag("event", name, { ...params, event_callback: navigate });
     window.setTimeout(navigate, 600);
 }
+
+function trackEventAndNavigate(name, params, url) {
+    if (navigationInProgress) return;
+    navigationInProgress = true;
+    const destination = purchaseDestination(url);
+    if (!trackingEnabled) {
+        window.location.href = destination;
+        return;
+    }
+    params = withPageContext(params);
+    if (typeof activeConsent?.analytics !== "boolean" ||
+        typeof activeConsent?.marketing !== "boolean") {
+        // Keep intent in memory on the source page. Both Accept and Reject
+        // continue the journey, but Reject must never send this event.
+        pendingNavigation = { name, params, url: destination };
+        window.DinavitCart?.close?.();
+        document.querySelector("dialog[open]")?.close();
+        showCookieBanner();
+        cookieButtons[0]?.focus();
+        return;
+    }
+    sendEventAndNavigate(name, params, destination);
+}
+
+window.addEventListener("pageshow", (event) => {
+    if (event.persisted) {
+        navigationInProgress = false;
+        pendingNavigation = null;
+    }
+});
 
 window.trackEvent = trackEvent;
 window.trackEventAndNavigate = trackEventAndNavigate;
@@ -335,6 +449,7 @@ function disableMetaPixel() {
 }
 
 function applyConsent(consent) {
+    activeConsent = consent;
     if (consent?.analytics === true) {
         const measurementId = getAnalyticsMeasurementId();
         if (measurementId) {
@@ -357,20 +472,27 @@ function saveConsentAndClose(consent) {
     setStoredConsent(consent);
     applyConsent(consent);
     hideCookieBanner();
+    if (pendingNavigation) {
+        const { name, params, url } = pendingNavigation;
+        pendingNavigation = null;
+        sendEventAndNavigate(name, params, url);
+    }
 }
 
 if (currentYear) {
     currentYear.textContent = String(new Date().getFullYear());
 }
 
-const initialConsent = getStoredConsent();
+configureReturnLink();
+
+const initialConsent = trackingEnabled ? getStoredConsent() : null;
 if (initialConsent) {
     applyConsent(initialConsent);
 }
 
 // Quien respondió al banner antes de añadir Meta solo consintió la analítica:
 // sin el campo marketing hay que volver a preguntarle.
-if (typeof initialConsent?.marketing === "boolean") {
+if (!trackingEnabled || typeof initialConsent?.marketing === "boolean") {
     hideCookieBanner();
 } else {
     showCookieBanner();

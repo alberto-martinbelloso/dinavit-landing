@@ -166,7 +166,7 @@
         if (!cart.length) return;
         if (window.trackEventAndNavigate) {
             window.trackEventAndNavigate(
-                "begin_checkout",
+                "purchase_intent",
                 eventParams(cart),
                 "/out-of-stock",
             );
